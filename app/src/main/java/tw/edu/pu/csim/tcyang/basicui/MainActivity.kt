@@ -11,6 +11,8 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -85,6 +87,7 @@ fun Main(modifier: Modifier = Modifier) {
     )
 
     var flag by remember { mutableStateOf("test") }
+    var currentImageIndex by remember { mutableStateOf(0) }  // 新增：圖片索引
 
     // 取得當前的 Context
     val context = LocalContext.current
@@ -178,7 +181,8 @@ fun Main(modifier: Modifier = Modifier) {
                     mper?.release()  //釋放資源
                     mper = null // 清除舊引用
                     mper = MediaPlayer.create(context, R.raw.tcyang) //設定音樂
-                    mper?.start() } , //開始播放
+                    mper?.start()
+                }, //開始播放
                 modifier = Modifier
                     .fillMaxWidth(0.33f)
                     .fillMaxHeight(0.8f),
@@ -188,7 +192,8 @@ fun Main(modifier: Modifier = Modifier) {
                 Text(text = "修課", color = Color.Red)
                 Image(
                     painterResource(id = R.drawable.teacher),
-                    contentDescription ="teacher icon")
+                    contentDescription = "teacher icon"
+                )
             }
 
             Button(
@@ -196,7 +201,8 @@ fun Main(modifier: Modifier = Modifier) {
                     mper?.release()  //釋放資源
                     mper = null // 清除舊引用
                     mper = MediaPlayer.create(context, R.raw.fly) //設定音樂
-                    mper?.start() },  //開始播放
+                    mper?.start()
+                },  //開始播放
                 modifier = Modifier
                     .fillMaxWidth(0.5f)
                     .fillMaxHeight(0.4f),
@@ -205,7 +211,8 @@ fun Main(modifier: Modifier = Modifier) {
                 Text(text = "展翅飛翔", color = Color.White)
                 Image(
                     painterResource(id = R.drawable.fly),
-                    contentDescription ="fly icon")
+                    contentDescription = "fly icon"
+                )
             }
 
             Button(
@@ -222,5 +229,31 @@ fun Main(modifier: Modifier = Modifier) {
                 Text(text = "結束App")
             }
         }
+
+        Spacer(modifier = Modifier.size(20.dp))
+
+        // 可切換的圖片按鈕
+        Image(
+            painter = painterResource(
+                id = if (currentImageIndex == 0)
+                    animals[0]  // 鴨子
+                else
+                    animals[1]  // 企鵝
+            ),
+            contentDescription = "可切換的動物圖片: ${animalsName[currentImageIndex]}",
+            modifier = Modifier
+                .size(150.dp)
+                .clickable {
+                    currentImageIndex = if (currentImageIndex == 0) 1 else 0
+                    Toast.makeText(
+                        context,
+                        "切換到 ${animalsName[currentImageIndex]}",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+                .border(3.dp, Color.Blue, CircleShape)
+                .clip(CircleShape)
+                .background(Color.White)
+        )
     }
 }
